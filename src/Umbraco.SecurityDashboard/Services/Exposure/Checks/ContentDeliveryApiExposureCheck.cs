@@ -14,6 +14,11 @@ public class ContentDeliveryApiExposureCheck : IExposureCheck
 
     public string Keyword => "Content Delivery API";
 
-    public Task<ExposureVerdict> CheckAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(_settings.Value.Enabled ? ExposureVerdict.Vulnerable : ExposureVerdict.Mitigated);
+    public Task<ExposureCheckResult> CheckAsync(CancellationToken cancellationToken = default)
+    {
+        if (_settings.Value.Enabled)
+            return Task.FromResult(new ExposureCheckResult(ExposureVerdict.Vulnerable, null));
+
+        return Task.FromResult(new ExposureCheckResult(ExposureVerdict.Mitigated, "Content Delivery API is disabled"));
+    }
 }

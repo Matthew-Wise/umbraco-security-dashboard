@@ -15,7 +15,7 @@ public class ContentDeliveryApiExposureCheckTests
     {
         var sut = CreateSut(enabled: true);
         var result = await sut.CheckAsync();
-        Assert.Equal(ExposureVerdict.Vulnerable, result);
+        Assert.Equal(ExposureVerdict.Vulnerable, result.Verdict);
     }
 
     [Fact]
@@ -23,6 +23,24 @@ public class ContentDeliveryApiExposureCheckTests
     {
         var sut = CreateSut(enabled: false);
         var result = await sut.CheckAsync();
-        Assert.Equal(ExposureVerdict.Mitigated, result);
+        Assert.Equal(ExposureVerdict.Mitigated, result.Verdict);
+    }
+
+    // --- T015: Description tests ---
+
+    [Fact]
+    public async Task CheckAsync_CdaDisabled_ReturnsMitigationDescription()
+    {
+        var sut = CreateSut(enabled: false);
+        var result = await sut.CheckAsync();
+        Assert.Equal("Content Delivery API is disabled", result.MitigationDescription);
+    }
+
+    [Fact]
+    public async Task CheckAsync_CdaEnabled_MitigationDescriptionIsNull()
+    {
+        var sut = CreateSut(enabled: true);
+        var result = await sut.CheckAsync();
+        Assert.Null(result.MitigationDescription);
     }
 }
